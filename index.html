@@ -1,0 +1,43 @@
+/*Creative Project 2 JQuery*/
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Title</title>
+
+<script
+  src="http://code.jquery.com/jquery-3.2.1.min.js"
+</script>
+<script>
+var APIKEY = "";//When we get one
+$(document).ready(function(){
+//Place JQ here
+
+//Code here for reference:
+/*
+	$("#cityField").keyup(function(){
+		var url="http://bioresearch.byu.edu/cs260/jquery/getcity.cgi?q="+$("#cityField").val();
+		$.getJSON(url,function(data){
+			var everything="<ul>";
+			$.each(data,function(i,item){
+				everything+="<li> "+data[i].city;
+			});
+			everything+="</ul>";
+			$("#txtHint").html(everything);
+		}).done(function(){
+			console.log('getJSON request succeeded!');
+		}).fail(function(jqXHR,textStatus,errorThrown){
+			console.log('getJSON request failed! '+textStatus);
+			console.log("incoming "+jqXHR.responseText);
+		}).always(function(){
+			console.log('getJSON request ended!');
+		});
+	});
+*/
+});
+</script>
+</head>
+<body>
+Stuff here...
+</body>
+</html>
