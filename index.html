@@ -1,39 +1,33 @@
-/*Creative Project 2 JQuery*/
+<!--Creative Project 2 JQuery-->
 <!DOCTYPE html>
 <html>
 <head>
 
 <title>Title</title>
 
-<script
-  src="http://code.jquery.com/jquery-3.2.1.min.js"
+<script src="http://code.jquery.com/jquery-3.2.1.min.js" 
+	integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  	crossorigin="anonymous">
 </script>
 <script>
-var APIKEY = "";//When we get one
+var APIKEY = "5ada51d453098152d4a449d329ff2679";//When we get one
 $(document).ready(function(){
 //Place JQ here
-
-//Code here for reference:
+var url ='http://marketdata.websol.barchart.com/getHistory.jsonp?apikey='+APIKEY+'&symbol=IBM&type=daily&startDate=20161004000000'
 /*
-	$("#cityField").keyup(function(){
-		var url="http://bioresearch.byu.edu/cs260/jquery/getcity.cgi?q="+$("#cityField").val();
-		$.getJSON(url,function(data){
-			var everything="<ul>";
-			$.each(data,function(i,item){
-				everything+="<li> "+data[i].city;
-			});
-			everything+="</ul>";
-			$("#txtHint").html(everything);
-		}).done(function(){
-			console.log('getJSON request succeeded!');
-		}).fail(function(jqXHR,textStatus,errorThrown){
-			console.log('getJSON request failed! '+textStatus);
-			console.log("incoming "+jqXHR.responseText);
-		}).always(function(){
-			console.log('getJSON request ended!');
-		});
-	});
+$.getJSON(url, function(data){
+	console.log(data);
+	
+});
 */
+$.ajax({
+    url : url,
+    crossDomain: true,
+    dataType : "jsonp",
+    success : function(parsed_json) {
+      console.log(parsed_json);
+    }
+  });
 });
 </script>
 </head>
