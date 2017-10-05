@@ -11,12 +11,13 @@ function createHistory(){
 	    crossDomain: true,
 	    dataType : "jsonp",
 	    success : function(data) {
-	//	$("#progress_history").slideUp();
-		//history(data);
 	      console.log(data);
+		$("#progress_history").slideUp();
+		history(data);
 	    }
 	  });
 }
+
 function createChart(){
 //Chart shows the high a particular company (see &symbols in the url) had during the day
         var blue = '#0000ff'; var light_blue = '#32aaff'; var dark_blue = '#030072';
@@ -65,6 +66,60 @@ $(document).ready(function(){
     	google.charts.setOnLoadCallback(createChart);
 	createHistory();
   });
+//This is for creating the history
+Chart.defaults.global.responsive = true;
+var historyChart = new Chart($("#historyChart"), {
+	responsive: true,
+        type: "line",
+        data: {
+            labels: ["null","null"],
+            datasets: [{
+                data: [1,2,3],
+		label: 'data',
+		backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor:'rgba(255,99,132,1)',
+                borderWidth: 1 
+            }]
+        },
+	options: {
+            scales: {
+                yAxes: [{
+                    display: true,
+                    ticks: {
+                        beginAtZero:true
+                    }
+                }],
+                xAxes:[{
+                    display: true,
+                    ticks: {
+                        type: 'linear',
+                        max: 0,
+                        min: 0
+                    }
+                }]
+            }
+        }
+    });
 
+//Parse the data for the chart
+//Quote parsing data
+function history(data){
+    var close = []
+    var tradingDay = []
+    var bound = data.results.length;
+	//Want only a few values from the set of 253
+    bound = bound / 23; 	
+        for(j = 0; j < bound; j++){
+	    var i = 0;
+            close.push(data.results[i].close)
+            tradingDay.push(data.results[i].tradingDay)
+	    i += 23;
+            //quoteChart.data.datasets.data.push(data.results[j].high);
+            //quoteChart.data.labels.push(data.results[j].tradingDay);
+        }
+            historyChart.data.datasets[0].data = close;
+            historyChart.data.labels = tradingDay;
+    	    historyChart.update();
+};
 
 
