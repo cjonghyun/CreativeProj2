@@ -84,11 +84,12 @@ function searchStock(){
 //This is for creating the history
 
 function drawHistoryChart(){
-    new Chart(document.getElementById("historyChart"), {
+    var chart = new Chart(document.getElementById("historyChart"), {
         type: 'bar',
+        showTooltips: false,
         data: {
         labels: stock_labels,
-        datasets: [{ 
+        datasets: [{             
             data: stock_data,
             label: stock_symbol,
             borderColor: "#3e95cd",
