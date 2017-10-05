@@ -11,7 +11,7 @@ function createHistory(){
 	    crossDomain: true,
 	    dataType : "jsonp",
 	    success : function(data) {
-		$("#progress_history").slideUp();
+	//	$("#progress_history").slideUp();
 		//history(data);
 	      console.log(data);
 	    }
@@ -25,9 +25,9 @@ function createQuote(){
 	    crossDomain: true,
 	    dataType : "jsonp",
 	    success : function(data) {
+	      console.log(data);
 		$("#progress_quote").slideUp();
 		quote(data);
-	      console.log(data);
 	    }
 	  });
 
@@ -38,22 +38,24 @@ $(document).ready(function(){
   });
 
 //Build the Quote chart
+Chart.defaults.global.responsive = true;
 var quoteChart = new Chart($("#quoteChart"), {
+	responsive: true,
         type: "bar",
         data: {
-               labels: ["TSLA","GOOGL","AMZN"],
+          //  labels: [],
             datasets: [{
-		labe: 'data',
                 data: [],
+		label: 'data',
                 backgroundColor:[ 
                     "rgba(255, 99, 132, .5)",
                     "rgba(0,255,0, .5)",
-                    "rgba(0,0,255, .5)",
+                    "rgba(0,0,255, .5)"
                 ],
                 borderColor:[
                     "rgba(255, 99, 132, 1)",
                     "rgba(0,255,0, 1)",
-                    "rgba(0,0,255, 1)",
+                    "rgba(0,0,255, 1)"
                 ], 
                 borderWidth: 1 
             }]
@@ -77,14 +79,19 @@ var quoteChart = new Chart($("#quoteChart"), {
 //Parse the data for the chart
 //Quote parsing data
 var quote = function(data){
-    var high = []
-    var name = []
+    var highArr = []
+    var nameArr = []
         for(j = 0; j < data.results.length; j++){
-            high.push(data.results[j].high)
-            name.push(data.results[j].name)
-            quoteChart.data.datasets.data.push(data.results[j].high);
-            quoteChart.data.labels.push(data.results[j].name);
+            highArr.push(data.results[j].high)
+		console.log(data.results[j].high)
+            nameArr.push(data.results[j].name)
+		console.log(data.results[j].name)
+            //quoteChart.data.datasets.data.push(data.results[j].high);
+            //quoteChart.data.labels.push(data.results[j].name);
         }
+		console.log(highArr)
+            quoteChart.data.datasets[0].data = highArr;
+        //    quoteChart.data.labels = nameArr;
     	    quoteChart.update();
 };
 
