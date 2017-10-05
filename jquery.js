@@ -1,8 +1,10 @@
 /*jquery.js*/
 var APIKEY = "5ada51d453098152d4a449d329ff2679";//When we get one
-
-function createHistory(){
-	var symbol = "TSLA";//TSLA, GOOGL, AMZN
+var stock_data = [];
+var stock_labels = [];
+var stock_symbol = "";
+function createHistory(symbol="TSLA"){
+	//var symbol = "TSLA";//TSLA, GOOGL, AMZN
 	var startDate = "20161004000000"
 	var type = "daily";
 	var urlHistory ='http://marketdata.websol.barchart.com/getHistory.jsonp?apikey='+APIKEY+'&symbol='+symbol+'&type='+type+'&startDate='+startDate
@@ -12,16 +14,20 @@ function createHistory(){
 	    dataType : "jsonp",
 	    success : function(data) {
 	      console.log(data);
-		$("#progress_history").slideUp();
-		history(data);
+        $("#progress_history").slideUp();
+        stock_symbol = symbol;
+        history(data);
+        
+        drawHistoryChart();
+        
 	    }
 	  });
 }
 
 function createChart(){
 //Chart shows the high a particular company (see &symbols in the url) had during the day
-        var blue = '#0000ff'; var light_blue = '#32aaff'; var dark_blue = '#030072';
-	var urlQuote ='http://marketdata.websol.barchart.com/getQuote.jsonp?apikey='+APIKEY+'&symbols=TSLA,GOOGL,AMZN'
+    var blue = '#0000ff'; var light_blue = '#32aaff'; var dark_blue = '#030072';
+	var urlQuote ='http://marketdata.websol.barchart.com/getQuote.jsonp?apikey='+APIKEY+'&symbols=TSLA,GOOGL,AMZN';
         $.ajax({
 	    url : urlQuote,
 	    crossDomain: true,
@@ -64,62 +70,69 @@ function createChart(){
 $(document).ready(function(){
 	google.charts.load('current', {'packages':[ 'bar']});
     	google.charts.setOnLoadCallback(createChart);
-	createHistory();
+    createHistory();
+    
+    
+    
   });
+
+function searchStock(){
+    var stockInput = $("#stockId");
+    
+    createHistory(stockInput.val()); 
+}
 //This is for creating the history
-Chart.defaults.global.responsive = true;
-var historyChart = new Chart($("#historyChart"), {
-	responsive: true,
-        type: "line",
+
+function drawHistoryChart(){
+    new Chart(document.getElementById("historyChart"), {
+        type: 'bar',
         data: {
-            labels: ["null","null"],
-            datasets: [{
-                data: [1,2,3],
-		label: 'data',
-		backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderColor:'rgba(255,99,132,1)',
-                borderWidth: 1 
-            }]
-        },
-	options: {
-            scales: {
-                yAxes: [{
-                    display: true,
-                    ticks: {
-                        beginAtZero:true
-                    }
-                }],
-                xAxes:[{
-                    display: true,
-                    ticks: {
-                        type: 'linear',
-                        max: 0,
-                        min: 0
-                    }
-                }]
+        labels: stock_labels,
+        datasets: [{ 
+            data: stock_data,
+            label: stock_symbol,
+            borderColor: "#3e95cd",
+            fill: false
             }
+        ]
+        },
+        options: {
+        title: {
+            display: true,
+            text: 'Stock Price'
+        }
         }
     });
+}
 
 //Parse the data for the chart
 //Quote parsing data
 function history(data){
     var close = []
     var tradingDay = []
-    var bound = data.results.length;
+    if(data.results == null){
+        stock_symbol ="Wrong Symbol";
+        stock_data = [];
+        stock_labels = [];
+        return;
+    }
+    var bound = data.results.length;    
 	//Want only a few values from the set of 253
     bound = bound / 23; 	
-        for(j = 0; j < bound; j++){
-	    var i = 0;
-            close.push(data.results[i].close)
-            tradingDay.push(data.results[i].tradingDay)
-	    i += 23;
-            //quoteChart.data.datasets.data.push(data.results[j].high);
-            //quoteChart.data.labels.push(data.results[j].tradingDay);
-        }
-            historyChart.data.datasets[0].data = close;
-            historyChart.data.labels = tradingDay;
-    	    historyChart.update();
+    var i = 0;
+    for(j = 0; j < bound; j++){    
+        close.push(data.results[j].close)
+        tradingDay.push(data.results[j].tradingDay)
+        i += 23;
+        if(i > data.results.length)
+            break;
+        //quoteChart.data.datasets.data.push(data.results[j].high);
+        //quoteChart.data.labels.push(data.results[j].tradingDay);
+    }
+    console.log(close);
+    console.log(tradingDay);
+    stock_data = close;
+    stock_labels = tradingDay;    
 };
 
 
