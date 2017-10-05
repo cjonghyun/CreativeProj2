@@ -17,81 +17,58 @@ function createHistory(){
 	    }
 	  });
 }
+function createChart(){
 
-function createQuote(){
+        var blue = '#0000ff'; var light_blue = '#32aaff'; var dark_blue = '#030072';
 	var urlQuote ='http://marketdata.websol.barchart.com/getQuote.jsonp?apikey='+APIKEY+'&symbols=TSLA,GOOGL,AMZN'
-	$.ajax({
+        $.ajax({
 	    url : urlQuote,
 	    crossDomain: true,
 	    dataType : "jsonp",
+	    cache: false,
+            async: true,
 	    success : function(data) {
 	      console.log(data);
 		$("#progress_quote").slideUp();
-		quote(data);
-	    }
-	  });
-
+                initialArray = new Array("Company Names")
+                initialArray.push("high")
+                initialArray.push({role: 'style'})
+                var o = [initialArray];
+                for(i = 0; i < data.results.length; i++){
+			if(i < data.results.length){
+                        n = new Array(data.results[i].name)
+                        n.push(data.results[i].high)
+                        n.push(light_blue)
+                        o.push(n)
+			}
+                }
+	console.log(n)
+	console.log(o)
+	
+                var dataChart = new google.visualization.arrayToDataTable(o);
+	
+	console.log(dataChart)
+                var options = {
+                        title: "Stock Quotes",
+                        legend: { position: "none" },
+                        hAxis: {
+                          title: 'Company name'
+                        },
+                        bars: 'vertical'
+                };
+                var view = new google.visualization.DataView(dataChart);
+                var chart = new google.charts.Bar(document.getElementById('quote_bar'));
+                chart.draw(dataChart, options, view);
+		}
+        });
 }
 
+
 $(document).ready(function(){
-	createQuote();
+	google.charts.load('current', {'packages':[ 'bar']});
+    	google.charts.setOnLoadCallback(createChart);
   });
 
 //Build the Quote chart
-Chart.defaults.global.responsive = true;
-var quoteChart = new Chart($("#quoteChart"), {
-	responsive: true,
-        type: "bar",
-        data: {
-          //  labels: [],
-            datasets: [{
-                data: [],
-		label: 'data',
-                backgroundColor:[ 
-                    "rgba(255, 99, 132, .5)",
-                    "rgba(0,255,0, .5)",
-                    "rgba(0,0,255, .5)"
-                ],
-                borderColor:[
-                    "rgba(255, 99, 132, 1)",
-                    "rgba(0,255,0, 1)",
-                    "rgba(0,0,255, 1)"
-                ], 
-                borderWidth: 1 
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                yAxes: [{
-                    display: true,
-                    ticks: {
-                        beginAtZero:true
-                    }
-                }],
-                xAxes:[{
-                    display: true
-                }]
-            }
-        }
-    });
 
-//Parse the data for the chart
-//Quote parsing data
-var quote = function(data){
-    var highArr = []
-    var nameArr = []
-        for(j = 0; j < data.results.length; j++){
-            highArr.push(data.results[j].high)
-		console.log(data.results[j].high)
-            nameArr.push(data.results[j].name)
-		console.log(data.results[j].name)
-            //quoteChart.data.datasets.data.push(data.results[j].high);
-            //quoteChart.data.labels.push(data.results[j].name);
-        }
-		console.log(highArr)
-            quoteChart.data.datasets[0].data = highArr;
-        //    quoteChart.data.labels = nameArr;
-    	    quoteChart.update();
-};
 
