@@ -18,7 +18,7 @@ function createHistory(){
 	  });
 }
 function createChart(){
-
+//Chart shows the high a particular company (see &symbols in the url) had during the day
         var blue = '#0000ff'; var light_blue = '#32aaff'; var dark_blue = '#030072';
 	var urlQuote ='http://marketdata.websol.barchart.com/getQuote.jsonp?apikey='+APIKEY+'&symbols=TSLA,GOOGL,AMZN'
         $.ajax({
@@ -42,12 +42,8 @@ function createChart(){
                         o.push(n)
 			}
                 }
-	console.log(n)
-	console.log(o)
 	
                 var dataChart = new google.visualization.arrayToDataTable(o);
-	
-	console.log(dataChart)
                 var options = {
                         title: "Stock Quotes",
                         legend: { position: "none" },
@@ -67,8 +63,8 @@ function createChart(){
 $(document).ready(function(){
 	google.charts.load('current', {'packages':[ 'bar']});
     	google.charts.setOnLoadCallback(createChart);
+	createHistory();
   });
 
-//Build the Quote chart
 
 
