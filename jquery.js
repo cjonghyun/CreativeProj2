@@ -3,6 +3,7 @@ var APIKEY = "5ada51d453098152d4a449d329ff2679";//When we get one
 var stock_data = [];
 var stock_labels = [];
 var stock_symbol = "";
+var old_chart=null;
 function createHistory(symbol="TSLA"){
 	//var symbol = "TSLA";//TSLA, GOOGL, AMZN
 	var startDate = "20161004000000"
@@ -72,7 +73,12 @@ $(document).ready(function(){
     	google.charts.setOnLoadCallback(createChart);
     createHistory();
     
-    
+    $("#stockId").keyup(function(event){
+        if(event.keyCode == 13){
+            $("#buttonSubmit").click();
+        }    
+    }    
+  )
     
   });
 
@@ -84,26 +90,35 @@ function searchStock(){
 //This is for creating the history
 
 function drawHistoryChart(){
-    var chart = new Chart(document.getElementById("historyChart"), {
-        type: 'bar',
-        showTooltips: false,
-        data: {
-        labels: stock_labels,
-        datasets: [{             
-            data: stock_data,
-            label: stock_symbol,
-            borderColor: "#3e95cd",
-            fill: false
+    if(old_chart != null){
+        old_chart.labels = stock_labels;
+        old_chart.data.datasets[0].data = stock_data;
+        old_chart.data.datasets[0].label = stock_symbol;
+        old_chart.update();
+    }
+    else{
+        var chart = new Chart(document.getElementById("historyChart"), {
+            type: 'bar',
+            showTooltips: false,
+            data: {
+            labels: stock_labels,
+            datasets: [{             
+                data: stock_data,
+                label: stock_symbol,
+                borderColor: "#3e95cd",
+                fill: false
+                }
+            ]
+            },
+            options: {
+            title: {
+                display: true,
+                text: 'Stock Price'
             }
-        ]
-        },
-        options: {
-        title: {
-            display: true,
-            text: 'Stock Price'
-        }
-        }
-    });
+            }
+        });
+        old_chart = chart;
+    }
 }
 
 //Parse the data for the chart
